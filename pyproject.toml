@@ -27,6 +27,9 @@ dependencies = [
     "protobuf>=4.21.6",
     "langfuse>=4.0.1",
     "chromadb>=1.5.5",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "python-multipart>=0.0.9",
 ]
 
 [tool.uv]
