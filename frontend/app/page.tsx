@@ -1,65 +1,155 @@
-import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-background px-6 py-12">
+      <div className="mx-auto max-w-4xl space-y-12">
+
+        {/* ── Header ─────────────────────────────────────────────────── */}
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-muted-foreground uppercase tracking-widest">
+            Phase 3 — Design System Preview
+          </p>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">
+            Research Assistant
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-lg text-muted-foreground">
+            Apple-inspired UI for the Hybrid RAG arXiv system
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        <Separator />
+
+        {/* ── Color palette ───────────────────────────────────────────── */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold">Color Palette</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { label: "Background", cls: "bg-background border" },
+              { label: "Card", cls: "bg-card border" },
+              { label: "Primary (Blue)", cls: "bg-primary" },
+              { label: "Secondary", cls: "bg-secondary" },
+              { label: "Muted", cls: "bg-muted" },
+              { label: "Destructive", cls: "bg-destructive" },
+              { label: "Success", style: { background: "var(--apple-green)" } },
+              { label: "Warning", style: { background: "var(--apple-yellow)" } },
+            ].map(({ label, cls, style }) => (
+              <div key={label} className="space-y-1.5">
+                <div
+                  className={`h-12 rounded-xl ${cls ?? ""}`}
+                  style={style}
+                />
+                <p className="text-xs text-muted-foreground">{label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Typography ──────────────────────────────────────────────── */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold">Typography</h2>
+          <Card>
+            <CardContent className="pt-6 space-y-3">
+              <p className="text-4xl font-bold tracking-tight">Display — 36px Bold</p>
+              <p className="text-2xl font-semibold">Title — 24px Semibold</p>
+              <p className="text-lg font-medium">Headline — 18px Medium</p>
+              <p className="text-base">Body — 16px Regular. The transformer model uses self-attention to relate positions of a sequence. [Document 1]</p>
+              <p className="text-sm text-muted-foreground">Caption — 14px Muted. arXiv:0705.2011 · cs.LG, cs.AI</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-widest">Label — 12px Uppercase Tracked</p>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* ── Components ──────────────────────────────────────────────── */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold">Components</h2>
+          <div className="grid gap-6 sm:grid-cols-2">
+
+            {/* Buttons */}
+            <Card>
+              <CardHeader><CardTitle className="text-base">Buttons</CardTitle></CardHeader>
+              <CardContent className="flex flex-wrap gap-3">
+                <Button>Submit Query</Button>
+                <Button variant="secondary">Sample Question</Button>
+                <Button variant="outline">View Source</Button>
+                <Button variant="destructive">Error State</Button>
+                <Button disabled>Loading…</Button>
+              </CardContent>
+            </Card>
+
+            {/* Badges */}
+            <Card>
+              <CardHeader><CardTitle className="text-base">Badges & Tags</CardTitle></CardHeader>
+              <CardContent className="flex flex-wrap gap-2">
+                <Badge>cs.LG</Badge>
+                <Badge variant="secondary">cs.AI</Badge>
+                <Badge variant="outline">arXiv:0705.2011</Badge>
+                <Badge
+                  className="text-white"
+                  style={{ background: "var(--apple-green)" }}
+                >
+                  PASS
+                </Badge>
+                <Badge
+                  className="text-white"
+                  style={{ background: "var(--apple-red)" }}
+                >
+                  FAIL
+                </Badge>
+                <Badge variant="secondary">Rank #1</Badge>
+                <Badge variant="outline">Score: 0.94</Badge>
+              </CardContent>
+            </Card>
+
+            {/* Card with glass utility */}
+            <Card className="card-apple">
+              <CardHeader>
+                <CardTitle className="text-base">Answer Card (hover me)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Multi-dimensional recurrent neural networks extend standard RNNs to
+                  operate over multi-dimensional data [Document 1]. They process
+                  sequences along multiple axes simultaneously [Document 2].
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Skeleton loading state */}
+            <Card>
+              <CardHeader><CardTitle className="text-base">Loading Skeleton</CardTitle></CardHeader>
+              <CardContent className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-4/5" />
+                <Skeleton className="h-4 w-3/5" />
+                <div className="flex gap-2 pt-2">
+                  <Skeleton className="h-6 w-16 rounded-full" />
+                  <Skeleton className="h-6 w-12 rounded-full" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* ── Glass panel demo ────────────────────────────────────────── */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-semibold">Glass Effect (Sidebar / NavBar)</h2>
+          <div
+            className="glass rounded-2xl p-6"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            <p className="font-semibold text-foreground mb-1">Settings Panel</p>
+            <p className="text-sm text-muted-foreground">
+              This glass panel will be used for the sidebar and navbar — frosted
+              backdrop-blur with semi-transparent background.
+            </p>
+          </div>
+        </section>
+
+      </div>
+    </main>
   );
 }

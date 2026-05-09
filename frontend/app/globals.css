@@ -1,26 +1,265 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Class-based dark mode used by shadcn components */
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-inter);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
+  --radius-xl: calc(var(--radius) * 2);
 }
 
+/* ── Light mode (Apple HIG) ──────────────────────────────────────────────── */
+:root {
+  /* shadcn semantic tokens — Apple values */
+  --background:            #F5F5F7;   /* Apple page background */
+  --foreground:            #1D1D1F;   /* Apple primary text */
+  --card:                  #FFFFFF;   /* Card surface */
+  --card-foreground:       #1D1D1F;
+  --popover:               #FFFFFF;
+  --popover-foreground:    #1D1D1F;
+  --primary:               #0071E3;   /* Apple blue */
+  --primary-foreground:    #FFFFFF;
+  --secondary:             #E8E8ED;   /* Secondary surface */
+  --secondary-foreground:  #1D1D1F;
+  --muted:                 #E8E8ED;
+  --muted-foreground:      #6E6E73;   /* Apple secondary text */
+  --accent:                #E8E8ED;
+  --accent-foreground:     #1D1D1F;
+  --destructive:           #FF453A;   /* Apple red */
+  --border:                #E8E8ED;
+  --input:                 #FFFFFF;
+  --ring:                  #0071E3;   /* Focus ring = Apple blue */
+  --radius:                0.75rem;   /* 12px base radius */
+
+  /* Sidebar */
+  --sidebar:               rgba(245, 245, 247, 0.8);
+  --sidebar-foreground:    #1D1D1F;
+  --sidebar-primary:       #0071E3;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:        #E8E8ED;
+  --sidebar-accent-foreground: #1D1D1F;
+  --sidebar-border:        rgba(0, 0, 0, 0.06);
+  --sidebar-ring:          #0071E3;
+
+  /* ── Apple-specific tokens (not in shadcn vocabulary) ────────────────── */
+  --apple-blue:            #0071E3;
+  --apple-blue-hover:      #0077ED;
+  --apple-green:           #30D158;
+  --apple-red:             #FF453A;
+  --apple-yellow:          #FFD60A;
+  --apple-text-primary:    #1D1D1F;
+  --apple-text-secondary:  #6E6E73;
+  --apple-text-tertiary:   #86868B;
+  --apple-surface:         #FFFFFF;
+  --apple-surface-2:       #E8E8ED;
+
+  /* Glass effect — used by NavBar & Sidebar */
+  --glass-bg:              rgba(255, 255, 255, 0.72);
+  --glass-blur:            20px;
+  --glass-border:          rgba(255, 255, 255, 0.6);
+
+  /* Shadows */
+  --shadow-card:           0 2px 8px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-elevated:       0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-glass:          0 4px 16px rgba(0, 0, 0, 0.08);
+
+  /* Extra radii */
+  --radius-pill:           980px;
+}
+
+/* ── Dark mode — class-based (used by shadcn + manual toggle) ────────────── */
+.dark {
+  --background:            #000000;
+  --foreground:            #F5F5F7;
+  --card:                  #1C1C1E;
+  --card-foreground:       #F5F5F7;
+  --popover:               #1C1C1E;
+  --popover-foreground:    #F5F5F7;
+  --primary:               #0A84FF;   /* iOS-adapted blue */
+  --primary-foreground:    #FFFFFF;
+  --secondary:             #2C2C2E;
+  --secondary-foreground:  #F5F5F7;
+  --muted:                 #2C2C2E;
+  --muted-foreground:      #98989D;
+  --accent:                #2C2C2E;
+  --accent-foreground:     #F5F5F7;
+  --destructive:           #FF453A;
+  --border:                rgba(255, 255, 255, 0.1);
+  --input:                 rgba(255, 255, 255, 0.08);
+  --ring:                  #0A84FF;
+
+  --sidebar:               rgba(28, 28, 30, 0.85);
+  --sidebar-foreground:    #F5F5F7;
+  --sidebar-primary:       #0A84FF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent:        #2C2C2E;
+  --sidebar-accent-foreground: #F5F5F7;
+  --sidebar-border:        rgba(255, 255, 255, 0.06);
+  --sidebar-ring:          #0A84FF;
+
+  --apple-blue:            #0A84FF;
+  --apple-blue-hover:      #409CFF;
+  --apple-text-primary:    #F5F5F7;
+  --apple-text-secondary:  #98989D;
+  --apple-text-tertiary:   #636366;
+  --apple-surface:         #1C1C1E;
+  --apple-surface-2:       #2C2C2E;
+
+  --glass-bg:              rgba(28, 28, 30, 0.85);
+  --glass-border:          rgba(255, 255, 255, 0.08);
+
+  --shadow-card:           0 2px 8px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.3);
+  --shadow-elevated:       0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-glass:          0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ── OS-level dark mode fallback (works before next-themes JS loads) ──────── */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --background:            #000000;
+    --foreground:            #F5F5F7;
+    --card:                  #1C1C1E;
+    --card-foreground:       #F5F5F7;
+    --popover:               #1C1C1E;
+    --popover-foreground:    #F5F5F7;
+    --primary:               #0A84FF;
+    --primary-foreground:    #FFFFFF;
+    --secondary:             #2C2C2E;
+    --secondary-foreground:  #F5F5F7;
+    --muted:                 #2C2C2E;
+    --muted-foreground:      #98989D;
+    --accent:                #2C2C2E;
+    --accent-foreground:     #F5F5F7;
+    --destructive:           #FF453A;
+    --border:                rgba(255, 255, 255, 0.1);
+    --input:                 rgba(255, 255, 255, 0.08);
+    --ring:                  #0A84FF;
+    --sidebar:               rgba(28, 28, 30, 0.85);
+    --sidebar-foreground:    #F5F5F7;
+    --apple-blue:            #0A84FF;
+    --apple-surface:         #1C1C1E;
+    --apple-surface-2:       #2C2C2E;
+    --apple-text-secondary:  #98989D;
+    --glass-bg:              rgba(28, 28, 30, 0.85);
+    --glass-border:          rgba(255, 255, 255, 0.08);
+    --shadow-card:           0 2px 8px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.3);
+    --shadow-elevated:       0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-glass:          0 4px 16px rgba(0, 0, 0, 0.4);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Base styles ─────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
+
+  html {
+    @apply font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  /* Smooth focus rings matching Apple blue */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Scrollbar styling (webkit) */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--apple-text-tertiary);
+    border-radius: var(--radius-pill);
+    opacity: 0.5;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--apple-text-secondary);
+  }
+}
+
+/* ── Utility classes (used across components) ────────────────────────────── */
+@layer utilities {
+  /* Glass morphism panel */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-glass);
+  }
+
+  /* Apple-style card */
+  .card-apple {
+    background: var(--card);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .card-apple:hover {
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-1px);
+  }
+
+  /* Pill shape */
+  .pill {
+    border-radius: var(--radius-pill);
+  }
+
+  /* Fade-in animation for result cards */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 }
