@@ -1,0 +1,302 @@
+[
+  {
+    "question": "What energy levels are considered in the diphoton production calculation?",
+    "ground_truth": "The calculation considers Tevatron and LHC (Large Hadron Collider) energies.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "Which subprocesses are included in the next-to-leading order perturbative contributions for diphoton production?",
+    "ground_truth": "The next-to-leading order perturbative contributions include quark-antiquark, gluon-(anti)quark, and gluon-gluon subprocesses.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is the name of the algorithm described for sparse graph characterization?",
+    "ground_truth": "The algorithm is called the (k,ℓ)-pebble game with colors.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "Which characterization does the colored pebbles algorithm provide a new proof for?",
+    "ground_truth": "The colored pebbles algorithm provides a new proof of the Tutte-Nash-Williams characterization of arboricity.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What model is used to describe the evolution of the Earth-Moon system?",
+    "ground_truth": "The evolution is described by the dark matter field fluid model proposed at the Meeting of Division of Particle and Field 2004, American Physical Society.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What was the closest distance of the Moon to Earth according to the dark matter field fluid model?",
+    "ground_truth": "The closest distance was about 259000 km at 4.5 billion years ago, which is far beyond the Roche's limit.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is the average dark matter field fluid constant derived from Earth-Moon system data?",
+    "ground_truth": "The average dark matter field fluid constant is 4.39 x 10^(-22) s^(-1)m^(-1).",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What type of automata do Stirling cycle numbers count?",
+    "ground_truth": "A determinant of Stirling cycle numbers counts unlabeled acyclic single-source automata.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What grid is used to compute the Lambda-alpha norm?",
+    "ground_truth": "The dyadic grid is used to compute the Lambda-alpha norm.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "How are bosonic characters of atomic Cooper pairs quantified?",
+    "ground_truth": "Bosonic characters are quantified by the correction of Bose enhancement factor associated with the creation and annihilation composite particle operators.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What controls the interaction strengths in the Fermi gas study?",
+    "ground_truth": "Feshbach resonance controls the tunable interaction strengths in the Fermi gas.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is polymer quantum mechanics representation also known as in the context of loop quantum gravity?",
+    "ground_truth": "In the symmetric sector of loop quantum gravity, this approach is known as loop quantum cosmology.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What examples are considered in the polymer quantum mechanics paper?",
+    "ground_truth": "The examples include the harmonic oscillator, the free particle, and a simple cosmological model.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What are the two families of nonequilibrium entropy limiters for lattice Boltzmann methods?",
+    "ground_truth": "The two families are: (i) limiters based on restriction of nonequilibrium entropy (entropy trimming) and (ii) limiters based on filtering of nonequilibrium entropy (entropy filtering).",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What classical numerical examples are used to test the nonequilibrium entropy limiters?",
+    "ground_truth": "The limiters are tested on 1D athermal shock tubes with an initial density ratio 1:2 and the 2D lid-driven cavity for Reynolds numbers Re between 2000 and 7500 on a coarse 100*100 grid.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What are the key assumptions in the theoretical framework for astrophysical plasma turbulence?",
+    "ground_truth": "The key assumptions are that the turbulence is anisotropic with respect to the mean magnetic field and frequencies are low compared to the ion cyclotron frequency.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What equation governs Alfvenic fluctuations in the inertial range?",
+    "ground_truth": "Alfvenic fluctuations are governed by the RMHD equations at both the collisional and collisionless scales.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What bottom friction model is used in the shallow-water flows study?",
+    "ground_truth": "The bottom friction is modeled by the Chezy law.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What method is used to study the propagation of shallow-water waves over a gradual slope?",
+    "ground_truth": "The Whitham averaging method is used, specifically a recent development of this theory for perturbed integrable equations.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What does the conjecture by Diosi, Feldmann and Kosloff concern?",
+    "ground_truth": "The conjecture states that the limit of the entropy of certain mixtures is the relative entropy as system size goes to infinity.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What two types of proofs are provided for the entropy limit relation conjecture?",
+    "ground_truth": "The first proof is analytic and uses the quantum law of large numbers. The second proof clarifies the relation to channel capacity per unit cost for classical-quantum channels.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What does the intelligent acoustic emission locator comprise?",
+    "ground_truth": "The intelligent locator comprises a sensor antenna and a general regression neural network, which solves the location problem based on learning from examples.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "How does the accuracy of the intelligent acoustic emission locator compare to conventional methods?",
+    "ground_truth": "The location accuracy achieved by the intelligent locator is comparable to that obtained by the conventional triangulation method, while the applicability of the intelligent locator is more general since analysis of sonic ray paths is avoided.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What data sets were analyzed for white dwarf binary systems?",
+    "ground_truth": "Selected single source data sets from the first round of the Mock LISA Data Challenges (MLDC) were analyzed.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What two units comprise the end-to-end pipeline for white dwarf binary analysis?",
+    "ground_truth": "The pipeline consists of a grid-based coherent pre-processing unit for signal detection and an automatic Markov Chain Monte Carlo post-processing unit for signal evaluation.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is the input for the smooth Fano polytopes classification algorithm?",
+    "ground_truth": "The input of the algorithm is a single number, namely the positive integer d.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "How many isomorphism classes of smooth Fano 6-polytopes exist?",
+    "ground_truth": "There are 7622 isomorphism classes of smooth Fano 6-polytopes.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "How many isomorphism classes of smooth Fano 7-polytopes exist?",
+    "ground_truth": "There are 72256 isomorphism classes of smooth Fano 7-polytopes.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What technique is used for blind source separation in acoustic emission analysis?",
+    "ground_truth": "Blind source separation is achieved by independent component analysis (ICA).",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What type of specimen is used to test the location of two simultaneously active acoustic emission sources?",
+    "ground_truth": "An aluminum band specimen is used to test the location of two independent simultaneously active acoustic emission sources.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "How does the diphoton production calculation demonstrate agreement with experimental data and what predictions does it make?",
+    "ground_truth": "The calculation demonstrates good agreement with data from the Fermilab Tevatron and makes predictions for more detailed tests with CDF and DO data. It also shows predictions for distributions of diphoton pairs produced at LHC energy and contrasts Higgs boson decay distributions with QCD processes to show enhanced sensitivity to the signal can be obtained with judicious event selection.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What connections does the colored pebbles algorithm expose and what results does it strengthen?",
+    "ground_truth": "The colored pebbles algorithm generalizes and strengthens previous results of Lee and Streinu, provides a new proof of the Tutte-Nash-Williams characterization of arboricity, and exposes connections between pebble game algorithms and previous sparse graph algorithms by Gabow, Gabow and Westermann and Hendrickson. It also presents a new decomposition that certifies sparsity based on the (k,ℓ)-pebble game with colors.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "According to the dark matter field fluid model, what does the evidence suggest about tidal friction and what prediction is made about Mars?",
+    "ground_truth": "The result suggests that tidal friction may not be the primary cause for the evolution of the Earth-Moon system since the closest distance was far beyond the Roche's limit. The model predicts that Mars's rotation is also slowing with the angular acceleration rate about -4.38 x 10^(-22) rad s^(-2).",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What were the findings regarding bosonic characters at different scattering lengths in the Cooper pair study?",
+    "ground_truth": "On the side with negative scattering length, paired atoms described by ODLRO (off-diagonal long range order) are more bosonic than the pair projected definition. At (k_F a)^(-1) ≥ 1, both definitions give similar results, where more than 90% of the atoms occupy the corresponding molecular condensates.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is the relationship between polymer quantum mechanics and ordinary Schroedinger theory as explored in the paper?",
+    "ground_truth": "The paper has two parts: first, it derives polymer quantum mechanics starting from ordinary Schroedinger theory and shows that the polymer description arises as an appropriate limit. Second, it considers the continuum limit (reverse process) where one starts from the discrete theory and tries to recover back the ordinary Schroedinger quantum mechanics.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What benefits do the physical properties of lattice Boltzmann methods provide for the nonequilibrium entropy limiters?",
+    "ground_truth": "The physical properties of LBM provide additional benefits including the control of entropy production and accurate estimate of introduced artificial dissipation. The limiters erase spurious oscillations without blurring of shocks and do not affect smooth solutions, similar to how flux limiters work for finite differences, finite volumes and finite elements methods.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What happens to energy in astrophysical plasma turbulence and how does the kinetic cascade develop?",
+    "ground_truth": "Energy injected at the outer scale has to be converted into heat, which ultimately cannot be done without collisions. A kinetic cascade develops that brings the energy to collisional scales both in space and velocity. Its nature depends on the physics of plasma fluctuations, and in each physically distinct scale range, the kinetic problem is systematically reduced to a more tractable set of equations.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What non-local effect occurs in undular bore propagation and how does it differ from isolated solitary wave behavior?",
+    "ground_truth": "The combined action of variable topography and bottom friction generally imposes certain global restrictions on undular bore propagation so that the evolution of the leading solitary wave can be substantially different from that of an isolated solitary wave with the same initial amplitude. This non-local effect is due to nonlinear wave interactions within the undular bore and can lead to an additional solitary wave amplitude growth, which cannot be predicted in the framework of the traditional adiabatic approach.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What factors affect the accuracy of the intelligent acoustic emission locator?",
+    "ground_truth": "Tests have shown that the accuracy of location depends on sound velocity and attenuation in the specimen, the dimensions of the tested area, and the properties of stored data.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What advantages does the Markov Chain Monte Carlo approach provide in the white dwarf binary systems analysis?",
+    "ground_truth": "Signal detection with the coherent approach is secure and accurate, and is increased in accuracy and supplemented with additional information on the signal parameters by the Markov Chain Monte Carlo approach. The Markov Chain Monte Carlo routine is additionally able to determine accurately the noise level in the frequency window of interest.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is the capital city of France?",
+    "ground_truth": "This question cannot be answered from the provided documents as they contain scientific papers about physics, mathematics, and computer science, not geography.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "Who won the 2020 US presidential election?",
+    "ground_truth": "This question cannot be answered from the provided documents as they focus on academic research papers in various scientific domains and do not contain information about political elections.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is the best programming language for web development?",
+    "ground_truth": "This question cannot be answered from the provided documents as they are scientific research papers and do not discuss programming language comparisons or web development topics.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "How do I cook pasta carbonara?",
+    "ground_truth": "This question cannot be answered from the provided documents as they contain physics, mathematics and computer science research papers, not cooking recipes or culinary information.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What are the health benefits of meditation?",
+    "ground_truth": "This question cannot be answered from the provided documents as they focus on physics, mathematics, and technical topics rather than health, wellness, or meditation practices.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is the predicted angular acceleration rate for Mars's rotation?",
+    "ground_truth": "The model predicts that Mars's rotation is slowing with an angular acceleration rate about -4.38 x 10^(-22) rad s^(-2).",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What percentage of atoms occupy molecular condensates at (k_F a)^(-1) ≥ 1?",
+    "ground_truth": "At (k_F a)^(-1) ≥ 1, more than 90% of the atoms occupy the corresponding molecular condensates.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "For what dimensions has the smooth Fano polytopes classification algorithm been used?",
+    "ground_truth": "The algorithm has been used to classify smooth Fano d-polytopes for d≤7.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What is the alpha range for which the Lambda-alpha norm computation is described?",
+    "ground_truth": "The Lambda-alpha norm computation is described for alpha ≥ 0.",
+    "contexts": [],
+    "answer": ""
+  },
+  {
+    "question": "What type of gas is studied in the Cooper pairs research?",
+    "ground_truth": "A three-dimensional uniform Fermi gas is studied as an example in the Cooper pairs research.",
+    "contexts": [],
+    "answer": ""
+  }
+]

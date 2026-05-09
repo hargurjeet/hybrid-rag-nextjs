@@ -1,0 +1,62 @@
+name: RAG Evaluation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+env:
+  LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+  LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+  CO_API_KEY: ${{ secrets.CO_API_KEY }}
+jobs:
+  rag-eval:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          lfs: true  # Important for chroma_db files
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Clean old venv
+        run: rm -rf .venv
+
+      - name: Install dependencies
+        run: |
+          pip install uv
+          uv sync --python 3.11
+
+      - name: Install Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+
+      - name: Start Ollama
+        run: |
+          ollama serve > ollama.log 2>&1 &
+          sleep 5
+
+      - name: Pull models
+        run: |
+          ollama pull phi3:mini
+          # Run a dummy prompt to ensure the model is loaded in memory
+          ollama run phi3:mini "hi"
+          
+          ollama pull llama3.2
+
+      - name: Debug Python environment
+        run: |
+          which python
+          python --version
+          pip --version
+          pip list
+
+      - name: Run evaluation
+        run: |
+          uv run python evaluation/evaluate_rag.py

@@ -1,0 +1,35 @@
+[project]
+name = "hybrid-rag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "cohere>=5.20.7",
+    "datasets>=4.7.0",
+    "groq>=0.31.0",
+    "huggingface-hub>=1.7.1",
+    "kaggle>=2.0.0",
+    "kagglehub>=1.0.0",
+    "langchain>=1.2.12",
+    "langchain-core>=1.2.19",
+    "langchain-groq>=1.1.2",
+    "langchain-text-splitters>=1.1.1",
+    "numpy>=2.4.3",
+    "ollama>=0.6.1",
+    "pandas>=2.0.0,<3.0.0",
+    "python-dotenv>=1.2.2",
+    "ragas>=0.4.3",
+    "sentence-transformers>=5.3.0",
+    "streamlit>=1.39.0",
+    "tqdm>=4.67.3",
+    "weaviate-client>=4.20.4",
+    "protobuf>=4.21.6",
+    "langfuse>=4.0.1",
+    "chromadb>=1.5.5",
+]
+
+[tool.uv]
+override-dependencies = [
+    "groq==0.31.0"
+]
