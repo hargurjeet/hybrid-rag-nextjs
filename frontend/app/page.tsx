@@ -12,7 +12,8 @@ import { DebugPanel } from "@/components/ask/DebugPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { queryRAG } from "@/lib/api";
 import { DEFAULT_CONFIG, type RagConfig, type QueryResponse, type HistoryEntry } from "@/types/rag";
-import { BarChart2, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import { EvaluationView } from "@/components/evaluation/EvaluationView";
 
 export default function Home() {
   // Layout state
@@ -99,7 +100,7 @@ export default function Home() {
                 config={config}
               />
             ) : (
-              <EvaluationStub />
+              <EvaluationView />
             )}
           </div>
         </main>
@@ -250,32 +251,3 @@ function EmptyState() {
   );
 }
 
-/* ── Evaluation stub (Phase 7) ───────────────────────────────────────────── */
-
-function EvaluationStub() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
-      <div
-        className="flex h-16 w-16 items-center justify-center rounded-2xl"
-        style={{ background: "var(--apple-surface-2)" }}
-      >
-        <BarChart2 className="h-7 w-7 text-muted-foreground" />
-      </div>
-      <div className="max-w-xs space-y-1.5">
-        <h2 className="text-xl font-semibold text-foreground">RAG Evaluation</h2>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          Run RAGAS faithfulness evaluation and view results with pass/fail scoring.
-        </p>
-      </div>
-      <div
-        className="mt-2 rounded-xl px-4 py-2 text-xs font-medium"
-        style={{
-          background: "var(--apple-surface-2)",
-          color: "var(--apple-text-secondary)",
-        }}
-      >
-        Evaluation tab coming in Phase 7
-      </div>
-    </div>
-  );
-}

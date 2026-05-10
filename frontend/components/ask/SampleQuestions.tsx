@@ -28,6 +28,7 @@ export function SampleQuestions({ onSelect, disabled }: SampleQuestionsProps) {
             key={q}
             onClick={() => onSelect(q)}
             disabled={disabled}
+            aria-label={`Ask: ${q}`}
             className="rounded-full border px-4 py-1.5 text-sm text-foreground transition-all duration-150 hover:bg-secondary hover:border-transparent disabled:pointer-events-none disabled:opacity-50"
             style={{ borderColor: "var(--border)" }}
           >

@@ -25,6 +25,12 @@ export const metadata: Metadata = {
       "Ask questions about arXiv research papers using hybrid retrieval-augmented generation.",
     type: "website",
   },
+  twitter: {
+    card: "summary",
+    title: "Research Assistant — Hybrid RAG",
+    description:
+      "Ask questions about arXiv research papers using hybrid retrieval-augmented generation.",
+  },
 };
 
 export default function RootLayout({

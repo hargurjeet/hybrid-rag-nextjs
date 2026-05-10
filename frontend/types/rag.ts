@@ -24,6 +24,21 @@ export interface HistoryEntry {
   result: QueryResponse;
 }
 
+export interface EvaluationRecord {
+  question?: string;
+  answer?: string;
+  faithfulness?: number;
+  answer_relevancy?: number;
+  [key: string]: unknown;
+}
+
+export interface EvaluationResults {
+  results: EvaluationRecord[];
+  avg_faithfulness: number | null;
+  passed: boolean | null;
+  threshold: number;
+}
+
 export interface RagConfig {
   top_k: number;
   alpha: number;

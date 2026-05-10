@@ -31,7 +31,9 @@ export function TabNav({ activeTab, onTabChange }: TabNavProps) {
           <button
             key={id}
             role="tab"
+            id={`tab-${id}`}
             aria-selected={isActive}
+            aria-controls={`panel-${id}`}
             onClick={() => onTabChange(id)}
             className={cn(
               "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-sm font-medium transition-all duration-200",

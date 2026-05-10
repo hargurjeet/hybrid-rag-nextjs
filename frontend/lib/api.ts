@@ -1,4 +1,4 @@
-import type { QueryRequest, QueryResponse } from "@/types/rag";
+import type { QueryRequest, QueryResponse, EvaluationResults } from "@/types/rag";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
@@ -22,6 +22,21 @@ export async function queryRAG(params: QueryRequest): Promise<QueryResponse> {
 
   return res.json() as Promise<QueryResponse>;
 }
+
+export async function fetchEvaluationResults(): Promise<EvaluationResults> {
+  const res = await fetch(`${API_URL}/api/evaluation-results`);
+  if (!res.ok) {
+    let message = `Status ${res.status}`;
+    try {
+      const err = await res.json();
+      message = (err as { detail?: string }).detail ?? message;
+    } catch { /* ignore */ }
+    throw new Error(message);
+  }
+  return res.json() as Promise<EvaluationResults>;
+}
+
+export const EVAL_STREAM_URL = `${API_URL}/api/evaluate/stream`;
 
 export async function checkHealth(): Promise<boolean> {
   try {
