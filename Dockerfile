@@ -34,12 +34,10 @@ COPY ui/  ./ui/
 COPY api/ ./api/
 COPY chroma_db/ ./chroma_db/
 
-# Built Next.js artifacts from stage 1
-COPY --from=frontend-builder /build/.next          ./frontend/.next
-COPY --from=frontend-builder /build/node_modules   ./frontend/node_modules
-COPY --from=frontend-builder /build/public         ./frontend/public
-COPY --from=frontend-builder /build/package.json   ./frontend/package.json
-COPY --from=frontend-builder /build/next.config.ts ./frontend/next.config.ts
+# Built Next.js standalone artifacts from stage 1
+COPY --from=frontend-builder /build/.next/standalone ./frontend/
+COPY --from=frontend-builder /build/.next/static     ./frontend/.next/static
+COPY --from=frontend-builder /build/public           ./frontend/public
 
 COPY supervisord.conf /etc/supervisor/conf.d/app.conf
 
