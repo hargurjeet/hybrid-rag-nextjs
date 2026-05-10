@@ -1,6 +1,6 @@
 import type { QueryRequest, QueryResponse, EvaluationResults } from "@/types/rag";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export async function queryRAG(params: QueryRequest): Promise<QueryResponse> {
   const res = await fetch(`${API_URL}/api/query`, {

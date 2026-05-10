@@ -1,73 +1,49 @@
-# -------------------------------
-# Base Image
-# -------------------------------
-FROM python:3.10-slim
+# Stage 1 — Build Next.js frontend
+FROM node:20-slim AS frontend-builder
+WORKDIR /build
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+ENV NEXT_PUBLIC_API_URL=""
+RUN npm run build
 
-# -------------------------------
-# Set Working Directory
-# -------------------------------
-WORKDIR /app
+# Stage 2 — Python + Node.js runtime
+FROM python:3.11-slim
 
-# -------------------------------
-# System Dependencies
-# -------------------------------
 RUN apt-get update && apt-get install -y \
     curl \
-    git \
+    ca-certificates \
     build-essential \
     libgl1 \
     libglib2.0-0 \
+    supervisor \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# -------------------------------
-# Install UV
-# -------------------------------
+WORKDIR /app
+
+# Python deps via uv
 RUN pip install --no-cache-dir uv
-
-# -------------------------------
-# Copy dependency files first (for caching)
-# -------------------------------
 COPY pyproject.toml uv.lock ./
-
-# -------------------------------
-# Install dependencies using uv
-# -------------------------------
 RUN uv sync --no-dev
 
-# -------------------------------
-# Copy project code
-# -------------------------------
+# Application code
 COPY src/ ./src/
-COPY ui/ ./ui/
-COPY evaluation/ ./evaluation/
-COPY results/ ./results/
+COPY ui/  ./ui/
+COPY api/ ./api/
+COPY chroma_db/ ./chroma_db/
 
-# -------------------------------
-# Streamlit config
-# -------------------------------
-RUN mkdir -p /root/.streamlit
+# Built Next.js artifacts from stage 1
+COPY --from=frontend-builder /build/.next          ./frontend/.next
+COPY --from=frontend-builder /build/node_modules   ./frontend/node_modules
+COPY --from=frontend-builder /build/public         ./frontend/public
+COPY --from=frontend-builder /build/package.json   ./frontend/package.json
+COPY --from=frontend-builder /build/next.config.ts ./frontend/next.config.ts
 
-RUN echo "\
-[server]\n\
-headless = true\n\
-port = 8501\n\
-enableCORS = false\n\
-\n\
-[browser]\n\
-gatherUsageStats = false\n\
-" > /root/.streamlit/config.toml
+COPY supervisord.conf /etc/supervisor/conf.d/app.conf
 
-# -------------------------------
-# Expose port
-# -------------------------------
-EXPOSE 8501
-
-# -------------------------------
-# Healthcheck
-# -------------------------------
-HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health || exit 1
-
-# -------------------------------
-# Run Streamlit App (via uv)
-# -------------------------------
-CMD ["uv", "run", "streamlit", "run", "ui/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENV USE_GROQ=true
+EXPOSE 7860
+HEALTHCHECK CMD curl -f http://localhost:7860/api/health || exit 1
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/app.conf"]
