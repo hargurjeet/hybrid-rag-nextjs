@@ -34,8 +34,7 @@ if USE_GROQ:
         raise ValueError("GROQ_API_KEY required when USE_GROQ=true. Get free key from https://console.groq.com")
     
     groq_client = Groq(api_key=GROQ_API_KEY)
-    # Available models: llama-3.1-70b-versatile, mixtral-8x7b-32768, gemma-7b-it
-    GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile")
+    GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
     print(f"Using Groq API with model: {GROQ_MODEL}")
 
 # Only import HF client if needed
