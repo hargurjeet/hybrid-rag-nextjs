@@ -1,0 +1,33 @@
+import type { QueryRequest, QueryResponse } from "@/types/rag";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+export async function queryRAG(params: QueryRequest): Promise<QueryResponse> {
+  const res = await fetch(`${API_URL}/api/query`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(params),
+  });
+
+  if (!res.ok) {
+    let message = `Request failed with status ${res.status}`;
+    try {
+      const err = await res.json();
+      message = (err as { detail?: string }).detail ?? message;
+    } catch {
+      // ignore parse error, use status message
+    }
+    throw new Error(message);
+  }
+
+  return res.json() as Promise<QueryResponse>;
+}
+
+export async function checkHealth(): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_URL}/api/health`, { method: "GET" });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}

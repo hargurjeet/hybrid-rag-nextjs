@@ -3,14 +3,27 @@
 import { cn } from "@/lib/utils";
 import { SlidersHorizontal, Clock, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SettingsPanel } from "@/components/ask/SettingsPanel";
+import { QueryHistory } from "@/components/ask/QueryHistory";
+import type { RagConfig } from "@/types/rag";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  config: RagConfig;
+  onConfigChange: (config: RagConfig) => void;
+  history: string[];
+  onSelectHistory: (question: string) => void;
 }
 
-export function Sidebar({ isOpen, onClose }: SidebarProps) {
+export function Sidebar({
+  isOpen,
+  onClose,
+  config,
+  onConfigChange,
+  history,
+  onSelectHistory,
+}: SidebarProps) {
   return (
     <>
       {/* Mobile backdrop */}
@@ -22,7 +35,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         />
       )}
 
-      {/* Sidebar panel */}
+      {/* Panel */}
       <aside
         className={cn(
           "fixed right-0 top-14 z-40 h-[calc(100vh-3.5rem)] w-72 overflow-y-auto",
@@ -35,7 +48,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         <div className="flex flex-col gap-6 p-5">
 
-          {/* Mobile close button */}
+          {/* Mobile header */}
           <div className="flex items-center justify-between md:hidden">
             <span className="text-sm font-semibold text-foreground">Settings</span>
             <Button
@@ -49,58 +62,21 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             </Button>
           </div>
 
-          {/* Settings section — stub (filled in Phase 5) */}
+          {/* Settings */}
           <section>
-            <div className="mb-3 flex items-center gap-2">
+            <div className="mb-4 flex items-center gap-2">
               <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
               <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                 Settings
               </span>
             </div>
-            <div className="space-y-4">
-              {/* Top-K stub */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-foreground">Top-K Results</span>
-                  <span className="text-sm font-medium text-muted-foreground">5</span>
-                </div>
-                <Skeleton className="h-1.5 w-full rounded-full" />
-              </div>
-
-              {/* Alpha stub */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-foreground">Hybrid Alpha</span>
-                  <span className="text-sm font-medium text-muted-foreground">0.5</span>
-                </div>
-                <Skeleton className="h-1.5 w-full rounded-full" />
-              </div>
-
-              {/* Retrieval mode stub */}
-              <div className="space-y-1.5">
-                <span className="text-sm text-foreground">Retrieval Mode</span>
-                <div
-                  className="mt-1 flex w-full items-center gap-1 rounded-lg p-1"
-                  style={{ background: "var(--apple-surface-2)" }}
-                >
-                  <div className="flex-1 rounded-md bg-card py-1 text-center text-xs font-medium shadow-sm">
-                    Hybrid
-                  </div>
-                  <div className="flex-1 py-1 text-center text-xs font-medium text-muted-foreground">
-                    Vector
-                  </div>
-                </div>
-              </div>
-            </div>
+            <SettingsPanel config={config} onChange={onConfigChange} />
           </section>
 
           {/* Divider */}
-          <div
-            className="h-px w-full"
-            style={{ background: "var(--border)" }}
-          />
+          <div className="h-px w-full" style={{ background: "var(--border)" }} />
 
-          {/* Query history section — stub (filled in Phase 5) */}
+          {/* Query history */}
           <section>
             <div className="mb-3 flex items-center gap-2">
               <Clock className="h-3.5 w-3.5 text-muted-foreground" />
@@ -108,18 +84,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 Recent Queries
               </span>
             </div>
-            <div className="space-y-2">
-              {["What are MDRNNs?", "Explain self-attention", "Chezy law"].map(
-                (q) => (
-                  <button
-                    key={q}
-                    className="w-full rounded-lg px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                  >
-                    {q}
-                  </button>
-                )
-              )}
-            </div>
+            <QueryHistory history={history} onSelect={onSelectHistory} />
           </section>
         </div>
       </aside>
