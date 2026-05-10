@@ -1,15 +1,12 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { SlidersHorizontal, Clock, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { SlidersHorizontal, Clock } from "lucide-react";
 import { SettingsPanel } from "@/components/ask/SettingsPanel";
 import { QueryHistory } from "@/components/ask/QueryHistory";
 import type { RagConfig, HistoryEntry } from "@/types/rag";
 
 interface SidebarProps {
   isOpen: boolean;
-  onClose: () => void;
   config: RagConfig;
   onConfigChange: (config: RagConfig) => void;
   history: HistoryEntry[];
@@ -18,49 +15,34 @@ interface SidebarProps {
 
 export function Sidebar({
   isOpen,
-  onClose,
   config,
   onConfigChange,
   history,
   onSelectHistory,
 }: SidebarProps) {
   return (
-    <>
-      {/* Mobile backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/20 backdrop-blur-sm md:hidden"
-          onClick={onClose}
-          aria-hidden="true"
-        />
-      )}
-
-      {/* Panel */}
+    /*
+     * Clip wrapper — animates width so the panel slides in/out as an inline
+     * flex child. No fixed positioning, no backdrop, no blur on the content behind.
+     */
+    <div
+      className="shrink-0 overflow-hidden"
+      style={{
+        width: isOpen ? "288px" : "0",
+        transition: "width 300ms ease-in-out",
+      }}
+    >
       <aside
-        className={cn(
-          "fixed right-0 top-14 z-40 h-[calc(100vh-3.5rem)] w-72 overflow-y-auto",
-          "glass border-l transition-transform duration-300 ease-in-out",
-          "md:sticky md:translate-x-0",
-          isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
-        )}
-        style={{ borderColor: "var(--glass-border)" }}
+        className="w-72 h-[calc(100vh-3.5rem)] sticky top-14 overflow-y-auto border-l"
+        style={{
+          background: "var(--glass-bg)",
+          backdropFilter: "blur(var(--glass-blur))",
+          WebkitBackdropFilter: "blur(var(--glass-blur))",
+          borderColor: "var(--glass-border)",
+        }}
         aria-label="Settings panel"
       >
         <div className="flex flex-col gap-6 p-5">
-
-          {/* Mobile header */}
-          <div className="flex items-center justify-between md:hidden">
-            <span className="text-sm font-semibold text-foreground">Settings</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="h-7 w-7"
-              aria-label="Close settings"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
 
           {/* Settings */}
           <section>
@@ -86,8 +68,9 @@ export function Sidebar({
             </div>
             <QueryHistory history={history} onSelect={onSelectHistory} />
           </section>
+
         </div>
       </aside>
-    </>
+    </div>
   );
 }

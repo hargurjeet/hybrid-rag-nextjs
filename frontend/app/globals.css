@@ -146,40 +146,6 @@
   --shadow-glass:          0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
-/* ── OS-level dark mode fallback (works before next-themes JS loads) ──────── */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --background:            #000000;
-    --foreground:            #F5F5F7;
-    --card:                  #1C1C1E;
-    --card-foreground:       #F5F5F7;
-    --popover:               #1C1C1E;
-    --popover-foreground:    #F5F5F7;
-    --primary:               #0A84FF;
-    --primary-foreground:    #FFFFFF;
-    --secondary:             #2C2C2E;
-    --secondary-foreground:  #F5F5F7;
-    --muted:                 #2C2C2E;
-    --muted-foreground:      #98989D;
-    --accent:                #2C2C2E;
-    --accent-foreground:     #F5F5F7;
-    --destructive:           #FF453A;
-    --border:                rgba(255, 255, 255, 0.1);
-    --input:                 rgba(255, 255, 255, 0.08);
-    --ring:                  #0A84FF;
-    --sidebar:               rgba(28, 28, 30, 0.85);
-    --sidebar-foreground:    #F5F5F7;
-    --apple-blue:            #0A84FF;
-    --apple-surface:         #1C1C1E;
-    --apple-surface-2:       #2C2C2E;
-    --apple-text-secondary:  #98989D;
-    --glass-bg:              rgba(28, 28, 30, 0.85);
-    --glass-border:          rgba(255, 255, 255, 0.08);
-    --shadow-card:           0 2px 8px rgba(0, 0, 0, 0.4), 0 0 1px rgba(0, 0, 0, 0.3);
-    --shadow-elevated:       0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.4);
-    --shadow-glass:          0 4px 16px rgba(0, 0, 0, 0.4);
-  }
-}
 
 /* ── Base styles ─────────────────────────────────────────────────────────── */
 @layer base {

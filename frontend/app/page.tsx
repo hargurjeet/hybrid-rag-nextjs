@@ -18,7 +18,7 @@ import { EvaluationView } from "@/components/evaluation/EvaluationView";
 export default function Home() {
   // Layout state
   const [activeTab, setActiveTab] = useState<ActiveTab>("ask");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Query state
   const [query, setQuery] = useState("");
@@ -108,7 +108,6 @@ export default function Home() {
         {/* Sidebar */}
         <Sidebar
           isOpen={sidebarOpen}
-          onClose={() => setSidebarOpen(false)}
           config={config}
           onConfigChange={setConfig}
           history={history}

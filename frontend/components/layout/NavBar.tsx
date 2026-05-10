@@ -1,7 +1,8 @@
 "use client";
 
-import { FlaskConical, PanelRight, PanelRightClose } from "lucide-react";
+import { FlaskConical, PanelRight, PanelRightClose, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/lib/theme";
 
 interface NavBarProps {
   sidebarOpen: boolean;
@@ -9,6 +10,8 @@ interface NavBarProps {
 }
 
 export function NavBar({ sidebarOpen, onToggleSidebar }: NavBarProps) {
+  const { theme, setTheme } = useTheme();
+
   return (
     <header
       className="sticky top-0 z-50 glass border-b"
@@ -39,6 +42,22 @@ export function NavBar({ sidebarOpen, onToggleSidebar }: NavBarProps) {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
+          {/* Dark / light mode toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            aria-label="Toggle light / dark mode"
+            className="h-8 w-8"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+          </Button>
+
+          {/* Sidebar toggle */}
           <Button
             variant="ghost"
             size="icon"

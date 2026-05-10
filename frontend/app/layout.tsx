@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Providers } from "@/components/Providers";
 import "./globals.css";
 
 const inter = Inter({
@@ -45,7 +46,15 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground antialiased">
-        <TooltipProvider>{children}</TooltipProvider>
+        {/* Applies saved theme before first paint — prevents light flash when dark is stored */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var r=document.documentElement,t=localStorage.getItem('theme');if(t==='dark'){r.classList.add('dark');}else{r.classList.remove('dark');r.setAttribute('data-theme','light');}}catch(e){}})();`,
+          }}
+        />
+        <Providers>
+          <TooltipProvider>{children}</TooltipProvider>
+        </Providers>
       </body>
     </html>
   );
