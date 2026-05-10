@@ -38,7 +38,7 @@ def get_chroma_client():
 
 
 
-def run_pipeline(query, top_k=5, alpha=0.5, use_hybrid=True):
+def run_pipeline(query, top_k=5, alpha=0.5, use_hybrid=True, chat_history=None):
 
     # Initialize ChromaDB client and get collection
     client = get_chroma_client()
@@ -67,7 +67,8 @@ def run_pipeline(query, top_k=5, alpha=0.5, use_hybrid=True):
         # Uses reranked documents as context for better answers
         answer = generate_answer_with_llama(
             query=query,
-            reranked_docs=reranked_docs
+            reranked_docs=reranked_docs,
+            chat_history=chat_history,
         )
         
         return answer, reranked_docs

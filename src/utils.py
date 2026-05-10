@@ -301,58 +301,42 @@ def rerank_with_cohere(query, retrieved_docs, top_k=5):
 # MODIFIED: LLM Answer Generation with Toggle
 # ============================================
 @observe(as_type="generation") # Specialized type for LLM calls
-def generate_answer_with_llama(query, reranked_docs, model_name="llama3.2"):
+def generate_answer_with_llama(query, reranked_docs, model_name="llama3.2", chat_history=None):
     """
     Generate final answer using one of three backends:
     1. Groq API (USE_GROQ=true) - RECOMMENDED for cloud, free & fast
     2. HuggingFace Inference API (USE_HF_INFERENCE=true) - limited free tier
     3. Ollama (default) - for local development
-    
-    Configure via environment variables:
-    - USE_GROQ=true + GROQ_API_KEY → Groq
-    - USE_HF_INFERENCE=true + HF_TOKEN → HuggingFace
-    - Both false → Ollama (local)
+
+    chat_history: list of {"role": "user"|"assistant", "content": str} for
+    multi-turn conversation. The current `query` is appended as the final user turn.
     """
 
     context_blocks = []
-
     for i, doc in enumerate(reranked_docs):
         context_blocks.append(
             f"[Document {i+1} | arXiv:{doc['paper_id']}]\n{doc['text']}"
         )
-
     context = "\n\n".join(context_blocks)
 
-    prompt = f"""
-    You are a research assistant.
+    system_content = (
+        "You are a research assistant specialising in arXiv academic papers.\n"
+        "Answer questions using ONLY the provided context documents. "
+        "Cite every claim with [Document X] where X is the document number.\n\n"
+        f"Context Documents:\n{context}"
+    )
 
-    Answer the question using ONLY the context documents.
-
-    When using information from a document,
-    cite it using [Document X].
-
-    Example citation:
-    The transformer model uses self-attention [Document 2].
-
-    Context:
-    {context}
-
-    Question:
-    {query}
-
-    Answer:
-    """
+    messages = [{"role": "system", "content": system_content}]
+    for turn in (chat_history or []):
+        messages.append({"role": turn["role"], "content": turn["content"]})
+    messages.append({"role": "user", "content": query})
 
     # Choose LLM backend based on configuration
     if USE_GROQ:
-        # Groq API - RECOMMENDED for cloud deployment
-        # Free, fast (fastest inference in the world), reliable
         try:
             response = groq_client.chat.completions.create(
                 model=GROQ_MODEL,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
+                messages=messages,
                 temperature=0.7,
                 max_tokens=512,
                 top_p=0.95
@@ -379,11 +363,8 @@ def generate_answer_with_llama(query, reranked_docs, model_name="llama3.2"):
     elif USE_HF_INFERENCE:
         # HuggingFace Inference API
         try:
-            # Use chat completion for instruction-tuned models
             response = hf_client.chat_completion(
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
+                messages=messages,
                 max_tokens=512,
                 temperature=0.7,
                 top_p=0.95
@@ -405,9 +386,7 @@ def generate_answer_with_llama(query, reranked_docs, model_name="llama3.2"):
         # Ollama (local)
         response = ollama.chat(
             model=model_name,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
+            messages=messages,
         )
 
         answer = response.message.content

@@ -6,22 +6,31 @@ export interface DocumentResult {
   score: number | null;
 }
 
+export interface ChatHistoryItem {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  documents?: DocumentResult[];
+  latency_ms?: number;
+}
+
 export interface QueryRequest {
   query: string;
   top_k?: number;
   alpha?: number;
   use_hybrid?: boolean;
+  chat_history?: ChatHistoryItem[];
 }
 
 export interface QueryResponse {
   answer: string;
   documents: DocumentResult[];
   latency_ms: number;
-}
-
-export interface HistoryEntry {
-  query: string;
-  result: QueryResponse;
 }
 
 export interface EvaluationRecord {

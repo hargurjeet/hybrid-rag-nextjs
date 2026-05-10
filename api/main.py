@@ -47,11 +47,20 @@ app.add_middleware(
 )
 
 # ── schemas ───────────────────────────────────────────────────────────────────
+class ChatHistoryItem(BaseModel):
+    role: str = Field(..., description="'user' or 'assistant'")
+    content: str = Field(..., min_length=1)
+
+
 class QueryRequest(BaseModel):
     query: str = Field(..., min_length=1, description="Research question")
     top_k: int = Field(5, ge=1, le=10, description="Number of documents to return")
     alpha: float = Field(0.5, ge=0.0, le=1.0, description="Hybrid search blend weight")
     use_hybrid: bool = Field(True, description="Whether to use hybrid retrieval")
+    chat_history: list[ChatHistoryItem] = Field(
+        default_factory=list,
+        description="Previous conversation turns (user/assistant) before this query",
+    )
 
 
 class DocumentResult(BaseModel):
@@ -98,6 +107,7 @@ def query(req: QueryRequest):
             top_k=req.top_k,
             alpha=req.alpha,
             use_hybrid=req.use_hybrid,
+            chat_history=[h.model_dump() for h in req.chat_history],
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Pipeline error: {exc}") from exc

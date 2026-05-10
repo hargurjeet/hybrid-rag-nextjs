@@ -1,30 +1,19 @@
 "use client";
 
-import { SlidersHorizontal, Clock } from "lucide-react";
+import { SlidersHorizontal, RotateCcw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { SettingsPanel } from "@/components/ask/SettingsPanel";
-import { QueryHistory } from "@/components/ask/QueryHistory";
-import type { RagConfig, HistoryEntry } from "@/types/rag";
+import type { RagConfig } from "@/types/rag";
 
 interface SidebarProps {
   isOpen: boolean;
   config: RagConfig;
   onConfigChange: (config: RagConfig) => void;
-  history: HistoryEntry[];
-  onSelectHistory: (entry: HistoryEntry) => void;
+  onClearChat: () => void;
 }
 
-export function Sidebar({
-  isOpen,
-  config,
-  onConfigChange,
-  history,
-  onSelectHistory,
-}: SidebarProps) {
+export function Sidebar({ isOpen, config, onConfigChange, onClearChat }: SidebarProps) {
   return (
-    /*
-     * Clip wrapper — animates width so the panel slides in/out as an inline
-     * flex child. No fixed positioning, no backdrop, no blur on the content behind.
-     */
     <div
       className="shrink-0 overflow-hidden"
       style={{
@@ -44,7 +33,7 @@ export function Sidebar({
       >
         <div className="flex flex-col gap-6 p-5">
 
-          {/* Settings */}
+          {/* RAG Settings */}
           <section>
             <div className="mb-4 flex items-center gap-2">
               <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
@@ -58,15 +47,19 @@ export function Sidebar({
           {/* Divider */}
           <div className="h-px w-full" style={{ background: "var(--border)" }} />
 
-          {/* Query history */}
+          {/* New Chat */}
           <section>
-            <div className="mb-3 flex items-center gap-2">
-              <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                Recent Queries
-              </span>
-            </div>
-            <QueryHistory history={history} onSelect={onSelectHistory} />
+            <p className="mb-3 text-xs text-muted-foreground leading-relaxed">
+              Start a fresh conversation. Your current chat will be cleared.
+            </p>
+            <Button
+              variant="secondary"
+              className="w-full gap-2 rounded-xl"
+              onClick={onClearChat}
+            >
+              <RotateCcw className="h-3.5 w-3.5" />
+              New Chat
+            </Button>
           </section>
 
         </div>

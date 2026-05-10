@@ -5,47 +5,38 @@ import { NavBar } from "@/components/layout/NavBar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TabNav, type ActiveTab } from "@/components/layout/TabNav";
 import { SampleQuestions } from "@/components/ask/SampleQuestions";
-import { SearchBar } from "@/components/ask/SearchBar";
-import { AnswerCard } from "@/components/ask/AnswerCard";
-import { SourceDocuments } from "@/components/ask/SourceDocuments";
-import { DebugPanel } from "@/components/ask/DebugPanel";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ChatThread } from "@/components/ask/ChatThread";
+import { ChatInput } from "@/components/ask/ChatInput";
 import { queryRAG } from "@/lib/api";
-import { DEFAULT_CONFIG, type RagConfig, type QueryResponse, type HistoryEntry } from "@/types/rag";
-import { AlertCircle } from "lucide-react";
+import { DEFAULT_CONFIG, type RagConfig, type ChatMessage } from "@/types/rag";
+import { AlertCircle, FlaskConical } from "lucide-react";
 import { EvaluationView } from "@/components/evaluation/EvaluationView";
 
+function uid() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
 export default function Home() {
-  // Layout state
   const [activeTab, setActiveTab] = useState<ActiveTab>("ask");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // Query state
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [query, setQuery] = useState("");
   const [config, setConfig] = useState<RagConfig>(DEFAULT_CONFIG);
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<QueryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const handleSelectQuestion = useCallback((q: string) => {
-    setQuery(q);
-    setResult(null);
-    setError(null);
-  }, []);
-
-  const handleSelectHistory = useCallback((entry: HistoryEntry) => {
-    setQuery(entry.query);
-    setResult(entry.result);
-    setError(null);
-  }, []);
 
   const handleSubmit = useCallback(async () => {
     const trimmed = query.trim();
     if (!trimmed || isLoading) return;
 
+    // Snapshot history before adding the new user message
+    const historyForApi = messages.map((m) => ({ role: m.role, content: m.content }));
+
+    // Append user message immediately so the UI feels responsive
+    setMessages((prev) => [...prev, { id: uid(), role: "user", content: trimmed }]);
+    setQuery("");
     setIsLoading(true);
-    setResult(null);
     setError(null);
 
     try {
@@ -54,53 +45,71 @@ export default function Home() {
         top_k: config.top_k,
         alpha: config.alpha,
         use_hybrid: config.use_hybrid,
+        chat_history: historyForApi,
       });
-      setResult(data);
-      setHistory((prev) =>
-        prev.some((e) => e.query === trimmed)
-          ? prev.map((e) => e.query === trimmed ? { query: trimmed, result: data } : e)
-          : [...prev, { query: trimmed, result: data }]
-      );
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: uid(),
+          role: "assistant",
+          content: data.answer,
+          documents: data.documents,
+          latency_ms: data.latency_ms,
+        },
+      ]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setIsLoading(false);
     }
-  }, [query, config, isLoading]);
+  }, [query, config, isLoading, messages]);
+
+  const handleSelectSample = useCallback((q: string) => {
+    setQuery(q);
+    setError(null);
+  }, []);
+
+  const handleClearChat = useCallback(() => {
+    setMessages([]);
+    setQuery("");
+    setError(null);
+  }, []);
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex h-screen flex-col bg-background">
       <NavBar
         sidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
       />
 
-      <div className="relative flex flex-1">
-        {/* Main content */}
-        <main className="flex flex-1 flex-col" style={{ minWidth: 0 }}>
+      <div className="flex flex-1 overflow-hidden">
+        {/* Main */}
+        <main className="flex flex-1 flex-col overflow-hidden" style={{ minWidth: 0 }}>
           {/* Tab bar */}
           <div
-            className="border-b px-4 py-3 sm:px-6"
+            className="shrink-0 border-b px-4 py-3 sm:px-6"
             style={{ borderColor: "var(--border)" }}
           >
             <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
           </div>
 
-          {/* Tab content */}
-          <div className="flex-1 px-4 py-6 sm:px-6">
+          {/* Content */}
+          <div className="flex-1 overflow-hidden">
             {activeTab === "ask" ? (
               <AskView
+                messages={messages}
                 query={query}
                 onQueryChange={setQuery}
                 onSubmit={handleSubmit}
-                onSelectSample={handleSelectQuestion}
+                onSelectSample={handleSelectSample}
                 isLoading={isLoading}
-                result={result}
                 error={error}
-                config={config}
               />
             ) : (
-              <EvaluationView />
+              <div className="h-full overflow-y-auto px-4 py-6 sm:px-6">
+                <EvaluationView />
+              </div>
             )}
           </div>
         </main>
@@ -110,96 +119,92 @@ export default function Home() {
           isOpen={sidebarOpen}
           config={config}
           onConfigChange={setConfig}
-          history={history}
-          onSelectHistory={handleSelectHistory}
+          onClearChat={handleClearChat}
         />
       </div>
     </div>
   );
 }
 
-/* ── Ask view ───────────────────────────────────────────────────────────── */
+/* ── Ask / Chat view ────────────────────────────────────────────────────────── */
 
 interface AskViewProps {
+  messages: ChatMessage[];
   query: string;
   onQueryChange: (v: string) => void;
   onSubmit: () => void;
   onSelectSample: (q: string) => void;
   isLoading: boolean;
-  result: QueryResponse | null;
   error: string | null;
-  config: RagConfig;
 }
 
 function AskView({
+  messages,
   query,
   onQueryChange,
   onSubmit,
   onSelectSample,
   isLoading,
-  result,
   error,
-  config,
 }: AskViewProps) {
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      {/* Sample questions */}
-      <SampleQuestions onSelect={onSelectSample} disabled={isLoading} />
+    <div className="flex h-full flex-col">
+      {/* Thread or empty state — scrollable region */}
+      <div className="flex-1 overflow-y-auto px-4 pt-6 pb-2 sm:px-6">
+        {messages.length === 0 ? (
+          <div className="space-y-8">
+            <SampleQuestions onSelect={onSelectSample} disabled={isLoading} />
+            <EmptyState />
+          </div>
+        ) : (
+          <ChatThread messages={messages} isLoading={isLoading} />
+        )}
+      </div>
 
-      {/* Search bar */}
-      <SearchBar
-        query={query}
-        onChange={onQueryChange}
-        onSubmit={onSubmit}
-        isLoading={isLoading}
-      />
-
-      {/* Loading skeleton */}
-      {isLoading && <LoadingSkeleton />}
-
-      {/* Error */}
-      {error && !isLoading && <ErrorCard message={error} />}
-
-      {/* Results */}
-      {result && !isLoading && (
-        <div className="space-y-4">
-          <AnswerCard answer={result.answer} latencyMs={result.latency_ms} />
-          <SourceDocuments documents={result.documents} />
-          {config.debug && <DebugPanel data={result} />}
+      {/* Error banner */}
+      {error && (
+        <div className="shrink-0 px-4 pb-2 sm:px-6">
+          <ErrorCard message={error} />
         </div>
       )}
 
-      {/* Empty state — nothing submitted yet */}
-      {!isLoading && !result && !error && <EmptyState />}
+      {/* Input — always pinned to bottom */}
+      <div
+        className="shrink-0 border-t px-4 py-4 sm:px-6"
+        style={{ borderColor: "var(--border)" }}
+      >
+        <ChatInput
+          query={query}
+          onChange={onQueryChange}
+          onSubmit={onSubmit}
+          isLoading={isLoading}
+          hasMessages={messages.length > 0}
+        />
+      </div>
     </div>
   );
 }
 
-/* ── Supporting UI pieces ────────────────────────────────────────────────── */
+/* ── Supporting UI pieces ───────────────────────────────────────────────────── */
 
-function LoadingSkeleton() {
+function EmptyState() {
   return (
-    <div className="space-y-4 animate-fade-in">
-      <div className="rounded-xl bg-card p-5 space-y-3" style={{ boxShadow: "var(--shadow-card)" }}>
-        <Skeleton className="h-4 w-1/3" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-5/6" />
-        <Skeleton className="h-4 w-4/5" />
+    <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+      <div
+        className="flex h-16 w-16 items-center justify-center rounded-2xl"
+        style={{ background: "var(--apple-surface-2)" }}
+      >
+        <FlaskConical className="h-7 w-7" style={{ color: "var(--apple-blue)" }} />
       </div>
-      {[1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="rounded-xl bg-card p-4 space-y-2"
-          style={{ boxShadow: "var(--shadow-card)" }}
-        >
-          <div className="flex items-center gap-3">
-            <Skeleton className="h-5 w-12 rounded-full" />
-            <Skeleton className="h-4 w-1/3" />
-          </div>
-          <Skeleton className="h-3 w-full" />
-          <Skeleton className="h-3 w-4/5" />
-        </div>
-      ))}
+      <div className="max-w-xs space-y-1.5">
+        <h2 className="text-xl font-semibold text-foreground">
+          Ask a Research Question
+        </h2>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Search across 10,000 arXiv papers. Ask a follow-up after each answer
+          to keep the conversation going.
+        </p>
+      </div>
     </div>
   );
 }
@@ -213,7 +218,10 @@ function ErrorCard({ message }: { message: string }) {
         background: "color-mix(in srgb, var(--apple-red) 8%, transparent)",
       }}
     >
-      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" style={{ color: "var(--apple-red)" }} />
+      <AlertCircle
+        className="mt-0.5 h-4 w-4 shrink-0"
+        style={{ color: "var(--apple-red)" }}
+      />
       <div>
         <p className="text-sm font-medium" style={{ color: "var(--apple-red)" }}>
           Request failed
@@ -227,26 +235,3 @@ function ErrorCard({ message }: { message: string }) {
     </div>
   );
 }
-
-function EmptyState() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-      <div
-        className="flex h-16 w-16 items-center justify-center rounded-2xl"
-        style={{ background: "var(--apple-surface-2)" }}
-      >
-        <span className="text-2xl">🔬</span>
-      </div>
-      <div className="max-w-xs space-y-1.5">
-        <h2 className="text-xl font-semibold text-foreground">
-          Ask a Research Question
-        </h2>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          Search across 10,000 arXiv papers using hybrid retrieval and
-          Groq-powered generation. Try a sample question above to get started.
-        </p>
-      </div>
-    </div>
-  );
-}
-
