@@ -5,15 +5,15 @@ import { SlidersHorizontal, Clock, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SettingsPanel } from "@/components/ask/SettingsPanel";
 import { QueryHistory } from "@/components/ask/QueryHistory";
-import type { RagConfig } from "@/types/rag";
+import type { RagConfig, HistoryEntry } from "@/types/rag";
 
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   config: RagConfig;
   onConfigChange: (config: RagConfig) => void;
-  history: string[];
-  onSelectHistory: (question: string) => void;
+  history: HistoryEntry[];
+  onSelectHistory: (entry: HistoryEntry) => void;
 }
 
 export function Sidebar({

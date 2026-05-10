@@ -19,6 +19,11 @@ export interface QueryResponse {
   latency_ms: number;
 }
 
+export interface HistoryEntry {
+  query: string;
+  result: QueryResponse;
+}
+
 export interface RagConfig {
   top_k: number;
   alpha: number;

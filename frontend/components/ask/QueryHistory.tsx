@@ -1,10 +1,11 @@
 "use client";
 
 import { Clock } from "lucide-react";
+import type { HistoryEntry } from "@/types/rag";
 
 interface QueryHistoryProps {
-  history: string[];
-  onSelect: (question: string) => void;
+  history: HistoryEntry[];
+  onSelect: (entry: HistoryEntry) => void;
 }
 
 export function QueryHistory({ history, onSelect }: QueryHistoryProps) {
@@ -21,14 +22,14 @@ export function QueryHistory({ history, onSelect }: QueryHistoryProps) {
 
   return (
     <div className="space-y-0.5">
-      {recent.map((q, i) => (
+      {recent.map((entry, i) => (
         <button
           key={i}
-          onClick={() => onSelect(q)}
+          onClick={() => onSelect(entry)}
           className="group flex w-full items-start gap-2 rounded-lg px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
         >
           <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 opacity-50 transition-opacity group-hover:opacity-100" />
-          <span className="line-clamp-2 leading-snug">{q}</span>
+          <span className="line-clamp-2 leading-snug">{entry.query}</span>
         </button>
       ))}
     </div>

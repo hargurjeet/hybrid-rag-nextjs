@@ -11,7 +11,7 @@ import { SourceDocuments } from "@/components/ask/SourceDocuments";
 import { DebugPanel } from "@/components/ask/DebugPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { queryRAG } from "@/lib/api";
-import { DEFAULT_CONFIG, type RagConfig, type QueryResponse } from "@/types/rag";
+import { DEFAULT_CONFIG, type RagConfig, type QueryResponse, type HistoryEntry } from "@/types/rag";
 import { BarChart2, AlertCircle } from "lucide-react";
 
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
   // Query state
   const [query, setQuery] = useState("");
   const [config, setConfig] = useState<RagConfig>(DEFAULT_CONFIG);
-  const [history, setHistory] = useState<string[]>([]);
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<QueryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +30,12 @@ export default function Home() {
   const handleSelectQuestion = useCallback((q: string) => {
     setQuery(q);
     setResult(null);
+    setError(null);
+  }, []);
+
+  const handleSelectHistory = useCallback((entry: HistoryEntry) => {
+    setQuery(entry.query);
+    setResult(entry.result);
     setError(null);
   }, []);
 
@@ -50,7 +56,9 @@ export default function Home() {
       });
       setResult(data);
       setHistory((prev) =>
-        prev.includes(trimmed) ? prev : [...prev, trimmed]
+        prev.some((e) => e.query === trimmed)
+          ? prev.map((e) => e.query === trimmed ? { query: trimmed, result: data } : e)
+          : [...prev, { query: trimmed, result: data }]
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -103,7 +111,7 @@ export default function Home() {
           config={config}
           onConfigChange={setConfig}
           history={history}
-          onSelectHistory={handleSelectQuestion}
+          onSelectHistory={handleSelectHistory}
         />
       </div>
     </div>
