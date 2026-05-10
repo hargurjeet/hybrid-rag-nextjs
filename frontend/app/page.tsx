@@ -6,6 +6,9 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { TabNav, type ActiveTab } from "@/components/layout/TabNav";
 import { SampleQuestions } from "@/components/ask/SampleQuestions";
 import { SearchBar } from "@/components/ask/SearchBar";
+import { AnswerCard } from "@/components/ask/AnswerCard";
+import { SourceDocuments } from "@/components/ask/SourceDocuments";
+import { DebugPanel } from "@/components/ask/DebugPanel";
 import { Skeleton } from "@/components/ui/skeleton";
 import { queryRAG } from "@/lib/api";
 import { DEFAULT_CONFIG, type RagConfig, type QueryResponse } from "@/types/rag";
@@ -149,9 +152,13 @@ function AskView({
       {/* Error */}
       {error && !isLoading && <ErrorCard message={error} />}
 
-      {/* Result placeholder — Phase 6 will replace this with AnswerCard + SourceDocuments */}
+      {/* Results */}
       {result && !isLoading && (
-        <ResultPlaceholder result={result} showDebug={config.debug} />
+        <div className="space-y-4">
+          <AnswerCard answer={result.answer} latencyMs={result.latency_ms} />
+          <SourceDocuments documents={result.documents} />
+          {config.debug && <DebugPanel data={result} />}
+        </div>
       )}
 
       {/* Empty state — nothing submitted yet */}
@@ -209,62 +216,6 @@ function ErrorCard({ message }: { message: string }) {
           <code className="font-mono">uv run uvicorn api.main:app --port 8000</code>
         </p>
       </div>
-    </div>
-  );
-}
-
-// Minimal result card — replaced by full AnswerCard + SourceDocuments in Phase 6
-function ResultPlaceholder({
-  result,
-  showDebug,
-}: {
-  result: QueryResponse;
-  showDebug: boolean;
-}) {
-  return (
-    <div className="space-y-4 animate-fade-in">
-      {/* Answer */}
-      <div
-        className="rounded-xl bg-card p-5"
-        style={{ boxShadow: "var(--shadow-card)" }}
-      >
-        <div className="mb-3 flex items-center justify-between">
-          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Answer
-          </span>
-          <span
-            className="rounded-full px-2.5 py-0.5 text-xs font-medium"
-            style={{
-              background: "var(--apple-surface-2)",
-              color: "var(--apple-text-secondary)",
-            }}
-          >
-            ⏱ {(result.latency_ms / 1000).toFixed(1)}s
-          </span>
-        </div>
-        <p className="text-[15px] leading-relaxed text-foreground whitespace-pre-wrap">
-          {result.answer}
-        </p>
-      </div>
-
-      {/* Source count badge */}
-      <p className="text-xs text-muted-foreground">
-        Retrieved{" "}
-        <span className="font-semibold text-foreground">{result.documents.length}</span>{" "}
-        source documents — full display coming in Phase 6
-      </p>
-
-      {/* Debug */}
-      {showDebug && (
-        <details className="rounded-xl bg-card p-4" style={{ boxShadow: "var(--shadow-card)" }}>
-          <summary className="cursor-pointer text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Debug — Raw JSON
-          </summary>
-          <pre className="mt-3 overflow-x-auto text-xs text-muted-foreground font-mono leading-relaxed">
-            {JSON.stringify(result, null, 2)}
-          </pre>
-        </details>
-      )}
     </div>
   );
 }
