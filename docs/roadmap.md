@@ -59,7 +59,7 @@ open http://localhost:8000/docs
 
 ---
 
-## Phase 3 — Design System & Global Styles 🔄
+## Phase 3 — Design System & Global Styles ✅
 **Goal**: Install shadcn/ui and establish all Apple-inspired CSS tokens.
 
 What will be built:
@@ -73,7 +73,7 @@ What will be built:
 
 ---
 
-## Phase 4 — Layout Shell & Navigation
+## Phase 4 — Layout Shell & Navigation ✅
 **Goal**: Top nav, sidebar shell, two-tab segmented control.
 
 What will be built:
@@ -86,7 +86,7 @@ What will be built:
 
 ---
 
-## Phase 5 — Ask Tab: Query Interface
+## Phase 5 — Ask Tab: Query Interface ✅
 **Goal**: Search bar, sample questions, settings panel, query history, API call wired.
 
 What will be built:
@@ -101,7 +101,7 @@ What will be built:
 
 ---
 
-## Phase 6 — Ask Tab: Results Display
+## Phase 6 — Ask Tab: Results Display ✅
 **Goal**: Answer card with markdown + citations, source document accordion, latency badge.
 
 What will be built:
@@ -115,7 +115,7 @@ What will be built:
 
 ---
 
-## Phase 7 — Evaluation Tab
+## Phase 7 — Evaluation Tab ✅
 **Goal**: Run evaluation, stream logs live, display results with pass/fail.
 
 What will be built:
@@ -128,7 +128,7 @@ What will be built:
 
 ---
 
-## Phase 8 — Polish, Accessibility & Responsive
+## Phase 8 — Polish, Accessibility & Responsive ✅
 **Goal**: Production-quality finish.
 
 What will be built:

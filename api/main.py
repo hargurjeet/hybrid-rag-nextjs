@@ -29,6 +29,36 @@ load_dotenv(ROOT / ".env")
 # pipeline is imported lazily inside the /api/query handler so the server
 # can start (and serve /api/health) even when API keys are not yet configured.
 
+# ── paper dataset cache ───────────────────────────────────────────────────────
+_papers_cache: list[dict] | None = None
+
+
+def _load_papers() -> list[dict]:
+    global _papers_cache
+    if _papers_cache is not None:
+        return _papers_cache
+    path = ROOT / "dataset" / "arxiv_10k.json"
+    try:
+        papers = []
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                r = json.loads(line)
+                authors = r.get("authors", "")
+                papers.append({
+                    "paper_id": r["id"],
+                    "title": r.get("title", "").replace("\n", " ").strip(),
+                    "categories": r.get("categories", ""),
+                    "authors_preview": authors[:77] + "…" if len(authors) > 80 else authors,
+                })
+        _papers_cache = papers
+        return papers
+    except FileNotFoundError:
+        raise HTTPException(status_code=503, detail="Dataset not available")
+
+
 # ── app ───────────────────────────────────────────────────────────────────────
 app = FastAPI(
     title="Hybrid RAG Research Assistant API",
@@ -61,6 +91,10 @@ class QueryRequest(BaseModel):
         default_factory=list,
         description="Previous conversation turns (user/assistant) before this query",
     )
+    paper_ids: list[str] = Field(
+        default_factory=list,
+        description="Optional list of paper IDs to restrict retrieval to",
+    )
 
 
 class DocumentResult(BaseModel):
@@ -77,11 +111,35 @@ class QueryResponse(BaseModel):
     latency_ms: float
 
 
+class PaperSummary(BaseModel):
+    paper_id: str
+    title: str
+    categories: str
+    authors_preview: str
+
+
 # ── endpoints ─────────────────────────────────────────────────────────────────
 @app.get("/api/health")
 def health():
     """Liveness check — confirms server is up and pipeline imports succeeded."""
     return {"status": "ok"}
+
+
+@app.get("/api/papers", response_model=list[PaperSummary])
+def search_papers(q: str = "", limit: int = 20):
+    """Search papers by title or category (case-insensitive substring match)."""
+    limit = min(limit, 50)
+    papers = _load_papers()
+    if not q.strip():
+        return papers[:limit]
+    q_lower = q.lower()
+    results = []
+    for p in papers:
+        if q_lower in p["title"].lower() or q_lower in p["categories"].lower():
+            results.append(p)
+            if len(results) >= limit:
+                break
+    return results
 
 
 @app.post("/api/query", response_model=QueryResponse)
@@ -108,6 +166,7 @@ def query(req: QueryRequest):
             alpha=req.alpha,
             use_hybrid=req.use_hybrid,
             chat_history=[h.model_dump() for h in req.chat_history],
+            paper_ids=req.paper_ids,
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Pipeline error: {exc}") from exc

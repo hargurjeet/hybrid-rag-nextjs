@@ -19,12 +19,20 @@ export interface ChatMessage {
   latency_ms?: number;
 }
 
+export interface PaperSummary {
+  paper_id: string;
+  title: string;
+  categories: string;
+  authors_preview: string;
+}
+
 export interface QueryRequest {
   query: string;
   top_k?: number;
   alpha?: number;
   use_hybrid?: boolean;
   chat_history?: ChatHistoryItem[];
+  paper_ids?: string[];
 }
 
 export interface QueryResponse {
@@ -61,3 +69,11 @@ export const DEFAULT_CONFIG: RagConfig = {
   use_hybrid: true,
   debug: false,
 };
+
+export interface ChatSession {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+  selectedPapers: PaperSummary[];
+  savedAt: Date;
+}

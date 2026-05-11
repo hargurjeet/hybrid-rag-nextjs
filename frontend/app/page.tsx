@@ -7,13 +7,22 @@ import { TabNav, type ActiveTab } from "@/components/layout/TabNav";
 import { SampleQuestions } from "@/components/ask/SampleQuestions";
 import { ChatThread } from "@/components/ask/ChatThread";
 import { ChatInput } from "@/components/ask/ChatInput";
+import { OnboardingCard } from "@/components/ask/OnboardingCard";
+import { PaperFilterBar } from "@/components/ask/PaperFilterBar";
 import { queryRAG } from "@/lib/api";
-import { DEFAULT_CONFIG, type RagConfig, type ChatMessage } from "@/types/rag";
-import { AlertCircle, FlaskConical } from "lucide-react";
+import { DEFAULT_CONFIG, type RagConfig, type ChatMessage, type PaperSummary, type ChatSession } from "@/types/rag";
+import { AlertCircle } from "lucide-react";
 import { EvaluationView } from "@/components/evaluation/EvaluationView";
 
 function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+}
+
+function sessionTitle(messages: ChatMessage[]): string {
+  const first = messages.find((m) => m.role === "user");
+  if (!first) return "Untitled chat";
+  const t = first.content.trim();
+  return t.length > 45 ? t.slice(0, 42) + "…" : t;
 }
 
 export default function Home() {
@@ -25,6 +34,8 @@ export default function Home() {
   const [config, setConfig] = useState<RagConfig>(DEFAULT_CONFIG);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPapers, setSelectedPapers] = useState<PaperSummary[]>([]);
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
 
   const handleSubmit = useCallback(async () => {
     const trimmed = query.trim();
@@ -46,6 +57,7 @@ export default function Home() {
         alpha: config.alpha,
         use_hybrid: config.use_hybrid,
         chat_history: historyForApi,
+        paper_ids: selectedPapers.length > 0 ? selectedPapers.map((p) => p.paper_id) : undefined,
       });
 
       setMessages((prev) => [
@@ -70,11 +82,45 @@ export default function Home() {
     setError(null);
   }, []);
 
-  const handleClearChat = useCallback(() => {
+  const handleNewChat = useCallback(() => {
+    if (messages.length > 0) {
+      setSessions((prev) => [
+        { id: uid(), title: sessionTitle(messages), messages, selectedPapers, savedAt: new Date() },
+        ...prev,
+      ]);
+    }
     setMessages([]);
     setQuery("");
     setError(null);
-  }, []);
+    setSelectedPapers([]);
+  }, [messages, selectedPapers]);
+
+  const handleRestoreSession = useCallback(
+    (session: ChatSession) => {
+      // Save the current conversation before switching (if non-empty)
+      if (messages.length > 0) {
+        setSessions((prev) => {
+          const withoutTarget = prev.filter((s) => s.id !== session.id);
+          const current: ChatSession = {
+            id: uid(),
+            title: sessionTitle(messages),
+            messages,
+            selectedPapers,
+            savedAt: new Date(),
+          };
+          return [current, ...withoutTarget];
+        });
+      } else {
+        setSessions((prev) => prev.filter((s) => s.id !== session.id));
+      }
+      setMessages(session.messages);
+      setSelectedPapers(session.selectedPapers);
+      setQuery("");
+      setError(null);
+      setSidebarOpen(false);
+    },
+    [messages, selectedPapers],
+  );
 
   return (
     <div className="flex h-screen flex-col bg-background">
@@ -105,6 +151,8 @@ export default function Home() {
                 onSelectSample={handleSelectSample}
                 isLoading={isLoading}
                 error={error}
+                selectedPapers={selectedPapers}
+                onSelectedPapersChange={setSelectedPapers}
               />
             ) : (
               <div className="h-full overflow-y-auto px-4 py-6 sm:px-6">
@@ -119,7 +167,9 @@ export default function Home() {
           isOpen={sidebarOpen}
           config={config}
           onConfigChange={setConfig}
-          onClearChat={handleClearChat}
+          onNewChat={handleNewChat}
+          sessions={sessions}
+          onRestoreSession={handleRestoreSession}
         />
       </div>
     </div>
@@ -136,6 +186,8 @@ interface AskViewProps {
   onSelectSample: (q: string) => void;
   isLoading: boolean;
   error: string | null;
+  selectedPapers: PaperSummary[];
+  onSelectedPapersChange: (papers: PaperSummary[]) => void;
 }
 
 function AskView({
@@ -146,20 +198,29 @@ function AskView({
   onSelectSample,
   isLoading,
   error,
+  selectedPapers,
+  onSelectedPapersChange,
 }: AskViewProps) {
   return (
     <div className="flex h-full flex-col">
       {/* Thread or empty state — scrollable region */}
       <div className="flex-1 overflow-y-auto px-4 pt-6 pb-2 sm:px-6">
         {messages.length === 0 ? (
-          <div className="space-y-8">
+          <div className="space-y-6">
+            <OnboardingCard />
             <SampleQuestions onSelect={onSelectSample} disabled={isLoading} />
-            <EmptyState />
           </div>
         ) : (
           <ChatThread messages={messages} isLoading={isLoading} />
         )}
       </div>
+
+      {/* Paper filter bar */}
+      <PaperFilterBar
+        selectedPapers={selectedPapers}
+        onSelectedPapersChange={onSelectedPapersChange}
+        disabled={isLoading}
+      />
 
       {/* Error banner */}
       {error && (
@@ -186,28 +247,6 @@ function AskView({
 }
 
 /* ── Supporting UI pieces ───────────────────────────────────────────────────── */
-
-function EmptyState() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-      <div
-        className="flex h-16 w-16 items-center justify-center rounded-2xl"
-        style={{ background: "var(--apple-surface-2)" }}
-      >
-        <FlaskConical className="h-7 w-7" style={{ color: "var(--apple-blue)" }} />
-      </div>
-      <div className="max-w-xs space-y-1.5">
-        <h2 className="text-xl font-semibold text-foreground">
-          Ask a Research Question
-        </h2>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          Search across 10,000 arXiv papers. Ask a follow-up after each answer
-          to keep the conversation going.
-        </p>
-      </div>
-    </div>
-  );
-}
 
 function ErrorCard({ message }: { message: string }) {
   return (

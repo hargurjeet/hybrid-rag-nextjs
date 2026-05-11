@@ -1,4 +1,4 @@
-import type { QueryRequest, QueryResponse, EvaluationResults } from "@/types/rag";
+import type { QueryRequest, QueryResponse, EvaluationResults, PaperSummary } from "@/types/rag";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -45,4 +45,11 @@ export async function checkHealth(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function searchPapers(q: string, limit = 20): Promise<PaperSummary[]> {
+  const params = new URLSearchParams({ q, limit: String(limit) });
+  const res = await fetch(`${API_URL}/api/papers?${params.toString()}`);
+  if (!res.ok) throw new Error(`Papers search failed: ${res.status}`);
+  return res.json() as Promise<PaperSummary[]>;
 }

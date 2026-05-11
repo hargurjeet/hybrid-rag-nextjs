@@ -223,14 +223,18 @@ def hybrid_retrieve_documents(query, collection, model, top_k=5, alpha=0.5):
 
 
 @observe()
-def retrieve_chroma(query, collection, model, top_k=5):
+def retrieve_chroma(query, collection, model, top_k=5, paper_ids=None):
 
     query_embedding = model.encode(query).tolist()
 
-    results = collection.query(
-        query_embeddings=[query_embedding],
-        n_results=top_k
-    )
+    query_kwargs: dict = {
+        "query_embeddings": [query_embedding],
+        "n_results": top_k,
+    }
+    if paper_ids:
+        query_kwargs["where"] = {"paper_id": {"$in": [str(p) for p in paper_ids]}}
+
+    results = collection.query(**query_kwargs)
 
     if not results["documents"] or len(results["documents"][0]) == 0:
         return []
